@@ -32,18 +32,36 @@ public class EmployeeControllerTest {
     private EmployeeRepository employeeRepository;
 
     @Test
-    public void shouldGetAllEmployees() {
+    public void shouldGetAllEmployeesWithV1Version() {
         assertThat(web).isNotNull();
 
-        Employee alex = new Employee("alex", "USER");
+        Employee alex = new Employee("alex m", "USER");
         List<Employee> allEmployees = Collections.singletonList(alex);
         when(employeeRepository.findAll()).thenReturn(allEmployees);
 
         web.get().uri("employees")
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .header("Accept", "application/springapp.api.v1+json")
                 .exchange()
                 .expectStatus().isOk()
-                .expectHeader().valueEquals("Content-Type", "application/json;charset=UTF-8")
+                .expectHeader().valueEquals("Content-Type", "application/springapp.api.v1+json;charset=UTF-8")
+                .expectBody();
+    }
+
+    @Test
+    public void shouldGetAllEmployeesWithV2Version() {
+        assertThat(web).isNotNull();
+
+        Employee alex = new Employee("alex m", "USER");
+        List<Employee> allEmployees = Collections.singletonList(alex);
+        when(employeeRepository.findAll()).thenReturn(allEmployees);
+
+        web.get().uri("employees")
+                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .header("Accept", "application/springapp.api.v2+json")
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().valueEquals("Content-Type", "application/springapp.api.v2+json;charset=UTF-8")
                 .expectBody();
     }
 }

@@ -2,6 +2,7 @@ package com.hlbk.restapi.controllers;
 
 import com.hlbk.restapi.converters.EmployeeConverter;
 import com.hlbk.restapi.dtos.EmployeeV1Dto;
+import com.hlbk.restapi.dtos.EmployeeV2Dto;
 import com.hlbk.restapi.exceptions.EmployeeNotFoundException;
 import com.hlbk.restapi.repositories.EmployeeRepository;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +19,21 @@ class EmployeeController {
         this.repository = repository;
     }
 
-    @GetMapping("/employees")
+    @GetMapping(path = "/employees", produces = "application/springapp.api.v1+json")
     Flux<EmployeeV1Dto> all() {
         return Flux.fromIterable(repository.findAll())
                 .map(employeeConverter::toEmployeeV1Dto);
     }
 
-    @PostMapping("/employees")
+    @GetMapping(path = "/employees", produces = "application/springapp.api.v2+json")
+    Flux<EmployeeV2Dto> allV2() {
+        return Flux.fromIterable(repository.findAll())
+                .map(employeeConverter::employeeV2Dto);
+    }
+
+    @PostMapping(path = "/employees",
+            produces = "application/springapp.api.v1+json",
+            consumes = "application/springapp.api.v1+json")
     Mono<EmployeeV1Dto> newEmployee(@RequestBody EmployeeV1Dto newEmployee) {
         return Mono.just(newEmployee)
                 .map(employeeConverter::toEmployee)
@@ -32,14 +41,17 @@ class EmployeeController {
                 .map(employeeConverter::toEmployeeV1Dto);
     }
 
-    @GetMapping("/employees/{id}")
+    @GetMapping(path = "/employees/{id}",
+            produces = "application/springapp.api.v1+json")
     Mono<EmployeeV1Dto> one(@PathVariable Long id) {
         return Mono.justOrEmpty(repository.findById(id))
                 .map(employeeConverter::toEmployeeV1Dto)
                 .switchIfEmpty(Mono.error(new EmployeeNotFoundException(id)));
     }
 
-    @PutMapping("/employees/{id}")
+    @PutMapping(path = "/employees/{id}",
+            produces = "application/springapp.api.v1+json",
+            consumes = "application/springapp.api.v1+json")
     Mono<EmployeeV1Dto> replaceEmployee(@RequestBody EmployeeV1Dto newEmployee, @PathVariable Long id) {
         return Mono.justOrEmpty(repository.findById(id))
                 .map(employee -> {
