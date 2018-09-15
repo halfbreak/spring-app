@@ -1,5 +1,6 @@
 package com.hlbk.restapi.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import javax.persistence.Id;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Employee {
     private @Id @GeneratedValue Long id;

@@ -1,6 +1,7 @@
 package com.hlbk.restapi.controllers;
 
 import com.hlbk.restapi.RestApiApplication;
+import com.hlbk.restapi.converters.EmployeeConverter;
 import com.hlbk.restapi.models.Employee;
 import com.hlbk.restapi.repositories.EmployeeRepository;
 import org.junit.Test;
@@ -21,8 +22,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @WebFluxTest(EmployeeController.class)
-@ContextConfiguration(classes = {RestApiApplication.class})
-//@SpringBootTest
+@ContextConfiguration(classes = {RestApiApplication.class, EmployeeConverter.class})
 public class EmployeeControllerTest {
 
     @Autowired
